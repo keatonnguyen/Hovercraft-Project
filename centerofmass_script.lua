@@ -1,11 +1,12 @@
--- function to set custom mass for each part of the hovercraft model
-function setCustomWeight(part, mass)
+-- Function for custom mass
+function setMass(part, mass)
 	local volume = part.Size.X * part.Size.Y * part.Size.Z
 	local density = mass / volume
 	part.CustomPhysicalProperties = PhysicalProperties.new(density, part.Elasticity, part.Friction)
 end
 
--- function to calculate center of mass for the hovercraft
+
+-- function to calculate center of mass
 function calculateCenterOfMass(folder)
 	local totalMass = 0
 	local weightedSum = Vector3.new(0, 0, 0)
@@ -30,13 +31,12 @@ function calculateCenterOfMass(folder)
 	for _, partInfo in pairs(parts) do
 		local part = folder:FindFirstChild(partInfo.name)
 		if part then
-			setCustomWeight(part, partInfo.mass)
+			setMass(part, partInfo.mass)
 			totalMass = totalMass + partInfo.mass
 			weightedSum = weightedSum + (partInfo.position * partInfo.mass)
 		end
 	end
 
-	-- calculate center of mass
 	if totalMass > 0 then
 		local centerOfMass = weightedSum / totalMass
 		return centerOfMass
@@ -45,19 +45,18 @@ function calculateCenterOfMass(folder)
 	end
 end
 
--- print center of mass for the hovercraft
-local hovercraftFolder = workspace.Hovercraft
-local com = calculateCenterOfMass(hovercraftFolder)
-if com then
-	print("Center of Mass: " .. tostring(com))
 
-	-- create a small part at the center of mass to visualize it
+-- Output of the script (center of masss + physical visualisation)
+local hovercraftFolder = workspace.Hovercraft
+local centerOfMassResult = calculateCenterOfMass(hovercraftFolder)
+if com then
+	print("Center of Mass: " .. tostring(centerOfMassResult))
 	local comMarker = Instance.new("Part")
 	comMarker.Size = Vector3.new(1, 1, 1)  
-	comMarker.Position = com  
+	comMarker.Position = centerOfMassResult  
 	comMarker.Anchored = true
 	comMarker.Material = Enum.Material.Neon 
-	comMarker.BrickColor = BrickColor.new("White")  -- visibility thing
+	comMarker.BrickColor = BrickColor.new("White")
 	comMarker.Parent = workspace
 else
 	print("No parts found in the Hovercraft folder.")
