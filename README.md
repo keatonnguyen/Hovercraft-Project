@@ -1,5 +1,5 @@
 
-# Hovercraft Center of Mass Calculator & Controller
+# Maze Solving Hovercraft
 
 This project contains two main components:
 - A **Roblox Lua script** to compute and visualize the center of mass of a hovercraft model.
