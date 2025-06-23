@@ -7,20 +7,20 @@
 #include <math.h>
 
 
-// define MPU6050
+// MPU6050 definitions
 #define MPU6050_ADDR 0x68
 #define MPU6050_PWR_MGMT_1 0x6B
 #define MPU6050_GYRO_XOUT_H 0x43
 
 
-// Ultrasonic sensor pins
+// Ultrasonic pins definition
 #define TRIG_LEFT PB3
 #define ECHO_LEFT PD2
 #define TRIG_RIGHT PB5
 #define ECHO_RIGHT PD3
 
 
-// Functions for algorithm
+//Values to use for the code
 volatile uint8_t turning = 0;
 volatile uint8_t turn_complete = 0;
 volatile uint8_t yaw_active = 0;
@@ -29,6 +29,7 @@ volatile float yaw_start = 0.0;
 volatile uint16_t left_distance = 0, right_distance = 0;
 volatile uint16_t timer_count = 0;
 volatile uint8_t echo_flag = 0;
+volatile uint32_t turn_timer_ms = 0;
 
 
 // UART functions
@@ -56,7 +57,7 @@ void UART_sendInt(int val)
 }
 
 
-// I2C Functions (TWI)
+// I2C functions (TWI)
 void TWI_init() 
 {
     TWSR = 0x00;
@@ -92,7 +93,7 @@ uint8_t TWI_read_NACK()
 }
 
 
-// MPU6050
+// MPU6050 functions
 void MPU6050_init() 
 {
     TWI_start();
@@ -116,7 +117,8 @@ int16_t MPU6050_read_gyro_z()
     return gz;
 }
 
-// IR Sensor
+
+// IR sensor functions
 void ADC_init() 
 {
     ADMUX = (1<<REFS0);
@@ -132,16 +134,16 @@ uint16_t read_IR()
 uint16_t read_IR_average() 
 {
     uint32_t sum = 0;
-    for (uint8_t i = 0; i < 8; i++) 
+    for (uint8_t i = 0; i < 100; i++) 
     {
         sum += read_IR();
-        _delay_ms(5);
+        _delay_ms(7);
     }
-    return sum / 8;
+    return sum / 100;
 }
 
 
-// Ultrasonic sensor
+// Ultrasonic sensor functions
 void US_init() 
 {
     DDRB |= (1<<TRIG_LEFT)|(1<<TRIG_RIGHT);
@@ -161,35 +163,22 @@ void trigger_US(uint8_t trig_pin)
 }
 ISR(INT0_vect) 
 {
-    if (PIND & (1<<ECHO_LEFT)) 
-    { 
-        TCNT2=0; timer_count=0; echo_flag=1; 
-    }
-    else 
-    { 
-        left_distance = (timer_count * 256 + TCNT2) * 0.027; echo_flag=0; 
-    }
+    if (PIND & (1<<ECHO_LEFT)) { TCNT2=0; timer_count=0; echo_flag=1; }
+    else { left_distance = (timer_count * 256 + TCNT2) * 0.027; echo_flag=0; }
 }
 ISR(INT1_vect) 
 {
-    if (PIND & (1<<ECHO_RIGHT)) 
-    { 
-        TCNT2=0; 
-        timer_count=0; 
-        echo_flag=2; 
-    }
-    else 
-    {
-        right_distance = (timer_count * 256 + TCNT2) * 0.027; echo_flag=0; 
-    }
+    if (PIND & (1<<ECHO_RIGHT)) { TCNT2=0; timer_count=0; echo_flag=2; }
+    else { right_distance = (timer_count * 256 + TCNT2) * 0.027; echo_flag=0; }
 }
 ISR(TIMER2_OVF_vect) 
 { 
-    timer_count++; 
-}
+    timer_count++;
+    if (turning) turn_timer_ms += 33;
+ }
 
 
-// Servo PWM on Timer1 OCR1A (PB1 = P9)
+// Setting servo's PWM on Timer1 OCR1A (PB1 = P9)
 void PWM_servo_init() 
 {
     DDRB |= (1<<PB1);
@@ -198,18 +187,18 @@ void PWM_servo_init()
     ICR1 = 39999;
     OCR1A = 2400;
 }
-void servo_center() { OCR1A = 2400; }
-void servo_left()   { OCR1A = 1000; }   // maximum sharp left
-void servo_right()  { OCR1A = 4400; }   // maximum sharp right
+void servo_center() { OCR1A = 2600; }    // angle to center servo 
+void servo_left()   { OCR1A = 1200; }    // angle for a left turn
+void servo_right()  { OCR1A = 4300; }    // angle for a right turn
 
 
-// Thrust fan PWM on Timer0 OCR0A (PD6 = P4)
+// Setting thrust fan PWM on Timer0 OCR0A (PD6 = P4)
 void PWM_thrust_fan_init() 
 {
     DDRD |= (1<<PD6);
     TCCR0A = (1<<COM0A1)|(1<<WGM01)|(1<<WGM00);
     TCCR0B = (1<<CS01);
-    OCR0A = 128;  // 50% power (can change depending on hovercraft build)
+    OCR0A = 130;  // power of the fan
 }
 
 
@@ -226,33 +215,43 @@ void lift_fan_off()
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 int main() 
 {
-    cli();  //Initialize all members
+    //Initialize all definitions
+    cli();
     UART_init();
     ADC_init();
     US_init();
     TWI_init();
     MPU6050_init();
     PWM_servo_init();
+    _delay_ms(2500);
     PWM_thrust_fan_init();
     lift_fan_on();
     sei();
 
+    //Center the thrust fan & stabilize IR readings at the beginning
+    servo_center();
+    UART_sendString("Waiting for IR sensor to stabilize...\r\n");
+    UART_sendString("IR sensor ready.\r\n");
+
     while (1) 
     {
+        // Reads distance with IR while not turning
         if (!turning && !turn_complete) 
         {
             uint16_t ir = read_IR_average();
             UART_sendString("IR value: "); UART_sendInt(ir); UART_sendString("\r\n");
 
-            if (ir > 150)   // Detect earlier (around 60-70 cm)
+            //When detecting obstacle, compare the side US sensors & determine which turn to make
+            if (ir > 120) 
             {  
                 UART_sendString("Obstacle detected!\r\n");
-
-                lift_fan_off();     // Turn OFF lift fan immediately
-
-                trigger_US(TRIG_LEFT);      //Compare left & right distances
+                trigger_US(TRIG_LEFT);
                 _delay_ms(60);
                 trigger_US(TRIG_RIGHT);
                 _delay_ms(60);
@@ -260,7 +259,7 @@ int main()
                 UART_sendString(" cm | Right US: "); UART_sendInt(right_distance);
                 UART_sendString(" cm\r\n");
 
-                if (left_distance > right_distance)     //Initiate turn
+                if (left_distance > right_distance) 
                 {
                     UART_sendString("Turning LEFT!\r\n");
                     servo_left();
@@ -270,20 +269,21 @@ int main()
                     UART_sendString("Turning RIGHT!\r\n");
                     servo_right();
                 }
-
-                lift_fan_on();  // Turn lift fan back ON before IMU yaw starts
                 yaw_start = current_yaw;
                 turning = 1;
                 yaw_active = 0;
-            }
+                turn_timer_ms = 0;
+                }
         }
 
-        if (turning)    //After turn, activate IMU to make sure hovercraft turns 90 degrees
+        //Perform the turn until IMU detects a full 90 degree turn
+        if (turning) 
         {
             int16_t gz = MPU6050_read_gyro_z();
             float gyro_z_dps = gz / 131.0;
 
-            if (!yaw_active && fabs(gyro_z_dps) > 10.0) 
+            //Turn on yaw readings when turn is sharp enough to omit slight tilts on hovercraft during the run
+            if (!yaw_active && fabs(gyro_z_dps) > 5.0) 
             {
                 UART_sendString("Yaw integration activated!\r\n");
                 yaw_active = 1;
@@ -293,7 +293,7 @@ int main()
             {
                 if (fabs(gyro_z_dps) > 2.0) 
                 {
-                    current_yaw += gyro_z_dps * 0.05;
+                    current_yaw += gyro_z_dps * 0.01;
                     if (current_yaw >= 360) current_yaw -= 360;
                     if (current_yaw < 0) current_yaw += 360;
                 }
@@ -305,15 +305,24 @@ int main()
                     turn_complete = 1;
                 }
             }
-        }
 
-        if (turn_complete)      //After turn, reset back to normal position
+            //Reset the hovercraft when a certain amount of time has gone by in case it gets stuck turning on the wrong side of a corner
+            if (turn_timer_ms >= 1600000) 
+            {
+                UART_sendString("Turn timeout! Resetting...\r\n");
+                servo_center();
+                turning = 0;
+                turn_complete = 0;
+            }
+        }
+        
+        //After a turn is performed, reset hovercraft
+        if (turn_complete) 
         {
             UART_sendString("Turn complete. Servo centered.\r\n");
             servo_center();
             turn_complete = 0;
         }
-
-        _delay_ms(50);
+        _delay_ms(10);
     }
 }
