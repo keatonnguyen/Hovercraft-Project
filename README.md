@@ -5,6 +5,7 @@ This project contains two main components:
 - A **Roblox Lua script** to compute and visualize the center of mass of a hovercraft model.
 - An **AVC/C code** to control the hovercraft's hardware components such as motors and sensors.
 
+
 ## 📂 Project Structure
 
 ```
@@ -13,6 +14,7 @@ This project contains two main components:
 ├── hovercraft_model            # RBLX file with 3d representation of the hovercraft
 └── README.md                   # Project documentation
 ```
+
 
 ## 🚀 Overview
 
@@ -35,12 +37,11 @@ An Arduino sketch that:
 - `trigger_US()`: Triggers the ultrasonic sensors to measure distance.
 - `servo_left()`, `servo_right()`, `servo_center()`: Controls the servo motors based on the movement direction.
 
-#### Hovercraft Logic:
-- When the IR sensor detects an obstacle, it compares the US sensors at the location.
+#### Turning Logic:
 - When a difference in distance between the left and right ultrasonic sensors is detected, the system determines the turn direction (left or right).
 - It uses gyroscope data to track yaw and ensure a 90-degree turn.
 - If the turn takes too long (timeout), it resets the servo to a centered position.
-- When there is an opening of a maze, the servo will automatically override everything and aim for the exit.
+
 
 ## 🛠 Requirements
 
@@ -49,6 +50,7 @@ An Arduino sketch that:
 ### Arduino
 - Arduino board (e.g., Arduino Nano)
 - Required electronics: motors, fans, sensors (IMU, ultrasonic, servo motors, etc.)
+
 
 ## 💡 Future Improvements
 - Implement more advanced control algorithms in Arduino (e.g., PID controllers).
