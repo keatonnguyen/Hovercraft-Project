@@ -18,11 +18,13 @@ This project contains two main coding components:
 # Overview
 
 centerofmass_script.lua
+  
   A Roblox Lua script that:
   - Calculates the center of mass of a hovercraft based on individual part masses and positions.
   - Creates a visual marker at the calculated center of mass (Neon white cube in the workspace).
 
 # hovercraft.ino
+  
   An Arduino sketch that:
   - Interfaces with the hovercraft’s motors, sensors, and other electronics.
   - Handles signals to operate the thrust and lift fans, manage balance, and possibly collect data from sensors (ultrasonics, IMU, etc).
