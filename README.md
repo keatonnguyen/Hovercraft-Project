@@ -7,8 +7,11 @@ This project contains two main coding components:
 
 # Project Structure
 ├── hovercraft_model            RBLX file for the 3D model representation of the hovercraft
+
 ├── centerofmass_script.lua     Lua script for computing and visualizing center of mass in Roblox Studio
+
 ├── hovercraft_code.ino         Arduino code for controlling hovercraft components (thrusters, sensors)
+
 └── README.md                   Project documentation
 
 
