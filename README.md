@@ -13,7 +13,7 @@ This project contains two main components:
 
 ```
 ├── centerofmass_script.lua     # Lua script for computing center of mass in Roblox Studio
-├── hovercraft_code.ino         # Arduino code for the hovercraft
+├── hovercraft_code.c           # Arduino code for the hovercraft
 ├── hovercraft_model.RBLX       # RBLX file with 3d representation of the hovercraft
 └── README.md                   # Project documentation
 ```
