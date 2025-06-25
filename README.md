@@ -23,7 +23,7 @@ A Roblox Lua script that:
 - Calculates the center of mass of a hovercraft based on individual part masses and positions.
 - Creates a visual marker at the calculated center of mass (Neon white cube in the workspace).
 
-### `hovercraft_code.ino`
+### `hovercraft_code.c`
 An Arduino sketch that:
 - Interfaces with the **MPU6050** gyro sensor to monitor the hovercraft's yaw (rotation).
 - Reads data from **two ultrasonic sensors** & **an infrared sensor** for measuring distances to obstacles on the front, left and right.
