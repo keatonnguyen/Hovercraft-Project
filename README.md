@@ -1,12 +1,15 @@
 
 # Maze Solving Hovercraft
+_Placed 1st in the ENGR 290 Competition at Concordia University!_
+<br />
+<br />
 
-This project contains two main components:
-- A **Roblox Lua script** to compute and visualize the center of mass of a hovercraft model.
-- An **AVC/C code** to control the hovercraft's hardware components such as motors and sensors.
 
 
 ## Project Structure
+This project contains two main components:
+- A **Roblox Lua script** to compute and visualize the center of mass of a hovercraft model.
+- An **AVC/C code** to control the hovercraft's hardware components such as motors and sensors.
 
 ```
 ├── centerofmass_script.lua     # Lua script for computing center of mass in Roblox Studio
@@ -51,5 +54,6 @@ An Arduino sketch that:
 - Arduino board (e.g., Arduino Nano)
 - ATMega328p board
 - Required electronics: motors, fans, sensors (IMU, ultrasonic, servo motors, etc.)
+
 
 
