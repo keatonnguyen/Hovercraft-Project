@@ -6,7 +6,7 @@ This project contains two main components:
 - An **AVC/C code** to control the hovercraft's hardware components such as motors and sensors.
 
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 ├── centerofmass_script.lua     # Lua script for computing center of mass in Roblox Studio
@@ -16,7 +16,7 @@ This project contains two main components:
 ```
 
 
-## 🚀 Overview
+## Overview
 
 ### `centerofmass_script.lua`
 A Roblox Lua script that:
@@ -43,16 +43,12 @@ An Arduino sketch that:
 - If the turn takes too long (timeout), it resets the servo to a centered position.
 
 
-## 🛠 Requirements
+## Requirements
 
 ### Roblox Studio
 
 ### Arduino
 - Arduino board (e.g., Arduino Nano)
 - Required electronics: motors, fans, sensors (IMU, ultrasonic, servo motors, etc.)
-
-
-## 💡 Future Improvements
-- Implement more advanced control algorithms in Arduino (e.g., PID controllers).
 
 
