@@ -49,6 +49,7 @@ An Arduino sketch that:
 
 ### Arduino
 - Arduino board (e.g., Arduino Nano)
+- ATMega328p board
 - Required electronics: motors, fans, sensors (IMU, ultrasonic, servo motors, etc.)
 
 
