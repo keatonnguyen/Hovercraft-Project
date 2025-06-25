@@ -18,7 +18,6 @@ This project contains two main components:
 └── README.md                   # Project documentation
 ```
 
-
 ## Overview
 
 ### `centerofmass_script.lua`
@@ -44,7 +43,7 @@ An Arduino sketch that:
 - When a difference in distance between the left and right ultrasonic sensors is detected, the system determines the turn direction (left or right).
 - It uses gyroscope data to track yaw and ensure a 90-degree turn.
 - If the turn takes too long (timeout), it resets the servo to a centered position.
-
+<br />
 
 ## Requirements
 
