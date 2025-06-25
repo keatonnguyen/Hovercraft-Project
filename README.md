@@ -17,7 +17,7 @@ This project contains two main components:
 ├── hovercraft_model.RBLX       # RBLX file with 3d representation of the hovercraft
 └── README.md                   # Project documentation
 ```
-
+<br />
 ## Overview
 
 ### `centerofmass_script.lua`
