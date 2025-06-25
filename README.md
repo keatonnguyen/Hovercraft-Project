@@ -18,6 +18,7 @@ This project contains two main components:
 └── README.md                   # Project documentation
 ```
 <br />
+
 ## Overview
 
 ### `centerofmass_script.lua`
