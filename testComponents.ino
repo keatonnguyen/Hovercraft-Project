@@ -1,7 +1,6 @@
 
 /*
-  test_all_components.ino
-  Test file to integrate and validate: 
+  Test file to integrate: 
   - MPU6050 IMU (yaw, pitch, roll)
   - Servo motor
   - Ultrasonic sensor
@@ -15,62 +14,74 @@
 #include <stdio.h>
 #include <math.h>
 
-// UART Setup
-void uart_init() {
+
+// UART SETUP FUNCTIONS
+void uart_init() 
+{
     UBRR0H = 0;
     UBRR0L = 103;  // 9600 baud
     UCSR0B = (1 << TXEN0) | (1 << RXEN0);
     UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);
 }
 
-void uart_transmit(char c) {
+void uart_transmit(char c) 
+{
     while (!(UCSR0A & (1 << UDRE0)));
     UDR0 = c;
 }
 
-void uart_print(const char* str) {
+void uart_print(const char* str) 
+{
     while (*str) uart_transmit(*str++);
 }
 
-void uart_print_int(int val) {
+void uart_print_int(int val) 
+{
     char buffer[10];
     itoa(val, buffer, 10);
     uart_print(buffer);
 }
 
-void uart_print_float(float val) {
+void uart_print_float(float val) 
+{
     char buffer[10];
     dtostrf(val, 6, 2, buffer);
     uart_print(buffer);
 }
 
-// Placeholder setup for each sensor
-void setup_mpu6050() {
+
+// SETUP FUNCTIONS
+void setup_mpu6050() 
+{
     uart_print("Initializing MPU6050...\r\n");
-    // Assume setup from finalimutest.ino or SERVO.ino
 }
 
-void setup_ultrasonic() {
+void setup_ultrasonic() 
+{
     uart_print("Initializing Ultrasonic Sensor...\r\n");
     DDRB |= (1 << PB3);     // Trigger pin
     DDRD &= ~(1 << PD2);    // Echo pin
 }
 
-void setup_ir_sensor() {
+void setup_ir_sensor() 
+{
     uart_print("Initializing IR Sensor...\r\n");
     ADMUX = 0x00;
     ADCSRA = (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1);
 }
 
-// Read function placeholders (simulate values for integration test)
-int read_ir_value() {
+
+// READ FUNCTIONS
+int read_ir_value() 
+{
     ADMUX = (ADMUX & 0xF0); // ADC0
     ADCSRA |= (1 << ADSC);
     while (ADCSRA & (1 << ADSC));
     return ADC;
 }
 
-int read_ultrasonic_distance() {
+int read_ultrasonic_distance() 
+{
     PORTB &= ~(1 << PB3); _delay_us(2);
     PORTB |= (1 << PB3); _delay_us(10);
     PORTB &= ~(1 << PB3);
@@ -85,7 +96,10 @@ int read_ultrasonic_distance() {
     return (pulse * 0.0343) / 2;
 }
 
-void setup() {
+
+//MAIN PART
+void setup() 
+{
     uart_init();
     setup_mpu6050();
     setup_ultrasonic();
@@ -93,7 +107,8 @@ void setup() {
     uart_print("Setup complete.\r\n");
 }
 
-void loop() {
+void loop() 
+{
     int ir = read_ir_value();
     int dist = read_ultrasonic_distance();
 
@@ -102,6 +117,6 @@ void loop() {
     uart_print(" | US Dist: ");
     uart_print_int(dist);
     uart_print(" cm\r\n");
-
+  
     _delay_ms(1000);
 }
