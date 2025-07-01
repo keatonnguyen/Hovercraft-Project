@@ -14,8 +14,9 @@ This project contains two main components:
 ```
 ├── centerofmass_script.lua     # Lua script for computing thecenter of mass and 3D visualisation in Roblox Studio
 ├── centerOfMassGraph.m         # MATLAB script for 2D visualisation of the center of mass
-├── hovercraft_code.c           # Arduino code for the hovercraft
-├── hovercraft_model.RBLX       # RBLX file with 3d representation of the hovercraft
+├── hovercraft_code.c           # Code for the hovercraft
+├── hovercraft_model.rblx       # RBLX file with 3d representation of the hovercraft
+├── testComponents.ino          # Ardunio code for testing/debugging the hovercraft's components
 └── README.md                   # Project documentation
 ```
 <br />
