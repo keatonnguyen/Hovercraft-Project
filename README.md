@@ -41,17 +41,6 @@ An AVC/C code that:
 - Sends real-time distance and turning status to a serial monitor over UART.
 - Includes a basic **yaw control** system to ensure smooth and controlled turns, updating orientation during movement.
 
-### `hovercraft.rblx`
-A RBLX model that:
-- Visualises the physical components of the hovercraft.
-- Follows precise measurements taken during construction of the hovercraft.
-
-### `tests.ino`
-An Arduino sketch that:
-- Interfaces with all critical components of the hovercraft.
-- Runs tests on each component and facilitates debugging & troubleshooting.
-  
-
 #### Key Functions:
 - `MPU6050_init()`: Initializes the MPU6050 sensor.
 - `MPU6050_read_gyro_z()`: Reads the gyroscope data to detect rotation.
@@ -64,6 +53,16 @@ An Arduino sketch that:
 - If the turn takes too long (timeout), it resets the servo to a centered position.
 <br />
 
+### `hovercraft.rblx`
+A RBLX model that:
+- Visualises the physical components of the hovercraft.
+- Follows precise measurements taken during construction of the hovercraft.
+
+### `tests.ino`
+An Arduino sketch that:
+- Interfaces with all critical components of the hovercraft.
+- Runs tests on each component and facilitates debugging & troubleshooting.
+  
 ## Requirements
 
 ### Roblox Studio
