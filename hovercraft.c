@@ -241,20 +241,45 @@ int main()
 
     while (1) 
     {
+        trigger_US(TRIG_LEFT);
+        _delay_ms(60);
+        trigger_US(TRIG_RIGHT);
+        _delay_ms(60);
+        
         // Reads distance with IR while not turning
         if (!turning && !turn_complete) 
         {
             uint16_t ir = read_IR_average();
             UART_sendString("IR value: "); UART_sendInt(ir); UART_sendString("\r\n");
 
+            //Exit override condition (50cm)
+            if (left_distance < 50 && right_distance >= 50) 
+            {
+                UART_sendString("Turning RIGHT!\r\n");
+                servo_right();
+                yaw_start = current_yaw;
+                turning = 1;
+                yaw_active = 0;
+                turn_timer_ms = 0;
+            }
+            else if (right_distance < 50 && left_distance >= 50) 
+            {
+                UART_sendString("Turning LEFT!\r\n");
+                servo_left();
+                yaw_start = current_yaw;
+                turning = 1;
+                yaw_active = 0;
+                turn_timer_ms = 0;
+            }
+
             //When detecting obstacle, compare the side US sensors & determine which turn to make
             if (ir > 120) 
             {  
+                //trigger_US(TRIG_LEFT);                                           Only enable if US sensor has a glitch
+                //_delay_ms(60);
+                //trigger_US(TRIG_RIGHT);
+                //_delay_ms(60);
                 UART_sendString("Obstacle detected!\r\n");
-                trigger_US(TRIG_LEFT);
-                _delay_ms(60);
-                trigger_US(TRIG_RIGHT);
-                _delay_ms(60);
                 UART_sendString("Left US: "); UART_sendInt(left_distance);
                 UART_sendString(" cm | Right US: "); UART_sendInt(right_distance);
                 UART_sendString(" cm\r\n");
