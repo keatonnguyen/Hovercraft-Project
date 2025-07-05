@@ -1,5 +1,5 @@
 
-# Maze Solving Hovercraft
+# Autonomous Obstacle-Solving Hovercraft
 _Placed 1st in the ENGR 290 Competition at Concordia University!_
 <br />
 <br />
