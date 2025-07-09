@@ -12,8 +12,8 @@ This project contains two main components:
 - An **AVC/C code** to control the hovercraft's hardware components such as motors and sensors.
 
 ```
-├── centerOfMass.lua            # Lua script for physical visualisation of center of mass in Roblox Studio
-├── centerOfMassGraph.m         # MATLAB script for graph visualisation of center of mass
+├── centerOfMass.lua            # Lua script for 3D marking of center of mass (using hovercraft.rblx)
+├── centerOfMass.m              # MATLAB script for graph visualisation of center of mass
 ├── hovercraft.c                # Code for the hovercraft
 ├── hovercraft.rblx             # RBLX file with 3d representation of the hovercraft
 ├── hovercraft.obj              # OBJ file with 3d render of the hovercraft
