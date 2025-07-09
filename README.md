@@ -16,7 +16,7 @@ This project contains two main components:
 ├── centerOfMassGraph.m         # MATLAB script for graph visualisation of center of mass
 ├── hovercraft.c                # Code for the hovercraft
 ├── hovercraft.rblx             # RBLX file with 3d representation of the hovercraft
-├── hovercraft.rblx             # OBJ file with 3d render of the hovercraft
+├── hovercraft.obj              # OBJ file with 3d render of the hovercraft
 ├── tests.ino                   # Ardunio code for testing/debugging the hovercraft's components
 └── README.md                   # Project documentation
 ```
