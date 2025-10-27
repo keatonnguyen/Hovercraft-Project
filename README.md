@@ -4,8 +4,7 @@ _Placed 1st in the ENGR 290 Competition at Concordia University!_
 
 CONTRIBUTORS:
 Keaton Nguyen
-Rohan Thangarajah
-Nabil Khan
+, Rohan Thangarajah
 <br />
 <br />
 
