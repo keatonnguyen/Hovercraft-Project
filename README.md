@@ -51,11 +51,6 @@ An AVC/C code that:
 - `MPU6050_read_gyro_z()`: Reads the gyroscope data to detect rotation.
 - `trigger_US()`: Triggers the ultrasonic sensors to measure distance.
 - `servo_left()`, `servo_right()`, `servo_center()`: Controls the servo motors based on the movement direction.
-
-#### Turning Logic:
-- When a difference in distance between the left and right ultrasonic sensors is detected, the system determines the turn direction (left or right).
-- It uses gyroscope data to track yaw and ensure a 90-degree turn.
-- If the turn takes too long (timeout), it resets the servo to a centered position.
 <br />
 
 ### `hovercraft.rblx`
