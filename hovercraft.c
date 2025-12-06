@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <avr/interrupt.h>
 
-// ---------------- Pin Defines ---------------- //
+
+// PIN definitions
 #define LIFT_FAN PD4
 #define FAN_THRUST_PIN PD5  // OC0B
 
@@ -43,7 +44,8 @@ float system_yaw = 0;
 #define DISTANCE_CHANGE_THRESHOLD 10
 const uint16_t BAR_DISTANCE_THRESHOLD = 25;
 
-// ---------------- IMU Variables ---------------- //
+
+// IMU
 float gyro_scale = 65.5f;
 float acc_scale = 8192.0f;
 
@@ -54,7 +56,8 @@ float offset_ax, offset_ay, offset_az, offset_gz;
 
 unsigned long last_imu_time = 0;
 
-// Ultrasonic sensor variables
+
+// Ultrasonic sensor
 volatile uint32_t pulse_width_left = 0;
 volatile uint32_t pulse_width_right = 0;
 volatile uint32_t echo_start_left = 0;
@@ -65,11 +68,13 @@ uint32_t right_distance = 0;
 
 uint16_t ir_distance = 0;
 
+
 // Timing variables
 volatile unsigned long milliseconds = 0;
 volatile unsigned long timer0_overflow_count = 0;
 
-// ---------------- UART Functions ---------------- //
+
+// UART
 void uartTransmit(char c) {
     while (!(UCSR0A & (1 << UDRE0)));
     UDR0 = c;
@@ -93,7 +98,9 @@ void uartPrintFloat(float num) {
     uartPrint(buffer);
 }
 
-// ---------------- Timing Functions ---------------- //
+
+// Timing functions
+
 // Timer0 overflow interrupt (for micros())
 ISR(TIMER0_OVF_vect) {
     timer0_overflow_count++;
@@ -131,7 +138,8 @@ unsigned long micros() {
     return (m * 1024UL) + (t * 4UL);
 }
 
-// ---------------- I2C Functions ---------------- //
+
+// I2C functions
 void i2c_init(void) {
     TWSR = 0x00;
     TWBR = 72;  // 100kHz I2C for better stability
@@ -167,7 +175,8 @@ uint8_t i2c_read_nack(void) {
     return TWDR;
 }
 
-// ---------------- ADC Functions ---------------- //
+
+// ADC functs
 void ADC_init() {
     ADMUX = (1 << REFS0);
     ADCSRA = (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
@@ -191,7 +200,7 @@ uint16_t readIR() {
     return 9999;
 }
 
-// ---------------- US Sensor Functions ---------------- //
+// US Sensor Funct
 ISR(INT0_vect) {
     if (PIND & (1 << ECHO_PIN_LEFT)) {
         // Rising edge - start timing
@@ -262,7 +271,8 @@ uint32_t getDistance_Right() {
     return pulse_width_right / 58;
 }
 
-// ---------------- Servo Control ---------------- //
+
+// Servo
 void servo_init() {
     // Configure Timer1 for Fast PWM mode with ICR1 as TOP
     // This gives us precise control over the PWM frequency and pulse width
@@ -293,7 +303,8 @@ void set_servo_angle(float angle) {
     OCR1A = ticks;
 }
 
-// ---------------- Fan Control ---------------- //
+
+// Fan control
 void startLiftFan() {
     PORTD |= (1 << LIFT_FAN);
 }
@@ -306,7 +317,8 @@ void setThrustFan(uint8_t speed) {
     OCR0B = speed;
 }
 
-// ---------------- IMU Functions ---------------- //
+
+// IMU Funct
 void mpu6050_init(void) {
     _delay_ms(100);  // Wait for MPU6050 to power up
     
@@ -401,7 +413,8 @@ void readIMU() {
     gyrZ -= offset_gz;
 }
 
-// ---------------- Setup ---------------- //
+
+// Setup
 void setup() {
     // UART - 9600 baud
     UBRR0H = 0;
@@ -666,3 +679,4 @@ int main() {
     }
     return 0;
 }
+
